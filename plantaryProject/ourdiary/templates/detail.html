@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Plantary Diary {% endblock %}
+
+{% block tab %}
+<a class="nav-link shadow" href="{% url 'home' %}">홈</a>
+
+{% if user.is_authenticated %}
+<a class="nav-link shadow" href="{% url 'mylist' %}" role="tab" aria-selected="false">나의일지</a>
+{% else %}
+<a class="nav-link shadow" role="tab" aria-selected="false" data-toggle="modal" data-target="#staticBackdrop">나의 일지</a>
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title txt-center" id="staticBackdropLabel">잠깐!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        로그인 하셔야 합니다
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+<a class="nav-link shadow" href="{% url 'ourdiary' %}" role="tab" aria-selected="false">모두의 일지</a>
+
+<a class="nav-link shadow" href="{% url 'storemain' %}" role="tab" aria-selected="false">상점</a>
+
+<a class="nav-link shadow" href="{% url 'storemain' %}" role="tab" aria-selected="false">돌봄 서비스</a>
+{% endblock %}
+
+{% block contents %}
+
+<div class="card mb-3 w-100">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                {% for photo in ourdiary.photo_set.all %}
+                <img src="{{photo.image.url}}" class="card-img-top" width="100">
+                <br>
+                {% endfor %}
+                <div class="card-body">
+                    
+                    <input class="btn btn-primary" type="button" id="like" name="{{ourdiary.id}}" value="Like">
+                    <p id="count-{{ourdiary.id}}" style="display: inline-block; margin-left: 15px;"> 좋아요{{ourdiary.like_count}}개</p>
+                    <p id="like-user-{{ourdiary.id}}">
+                        {% for like_user in ourdiary.like_user_set.all %}
+                        <p>좋아한 사람 : {{like_user.username}}</p>
+                        {% endfor %}
+                    </p>
+                    <p class="card-text" style="margin-top: 15px; font-weight: 700">{{ourdiary.title}}</p>
+                    <p class="card-text" style="margin-top: 15px;">{{ourdiary.description}}</p>
+
+                    {% if ourdiary.author == user %}
+                    <a href="{% url 'update' ourdiary.id %}" class="btn btn-outline-success">수정</a>
+                    <a href="{% url 'delete' ourdiary.id%}" class="btn btn-outline-danger">삭제</a>
+                    {% endif %}
+                    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                    <script type="text/javascript">
+                        $("#like").click(function () {
+                            var pk = $(this).attr('name')
+                            $.ajax({
+                                type: "POST",
+                                url: "{% url 'post_like' %}",
+                                data: {
+                                    'pk': pk,
+                                    'csrfmiddlewaretoken': '{{csrf_token}}'
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    alert(response.message);
+                                    $("#count-" + pk).html("좋아요&nbsp;" + response.like_count +
+                                        "개");
+                                    var users = $("#like-user-" + pk).text();
+                                    if (users.indexOf(response.username) != -1) {
+                                        $("#like-user-" + pk).text(users.replace(response
+                                            .username, ""));
+                                    } else {
+                                        $("#like-user-" + pk).text(response.username + users);
+                                    }
+                                },
+                                error: function (request, status, error) {
+                                    alert("로그인이 필요합니다.")
+                                    alert("code:" + request.status + "\n" + "message:" + request
+                                        .responseText + "\n" +
+                                        "error:" + error)
+                                    window.location.replace(
+                                        'http://127.0.0.1:8000/account/login'
+                                    ) /*로그인 페이지 넣기*/
+                                },
+                            });
+                        })
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title" style="font-weight: 900;">댓글 달기</h5>
+                <p class="card-text">
+                    <ul class="list-group">
+                        <li class="list-group-item" style="margin: 1px">
+                            <form method="POST" class="post-form" action="{% url 'add_comment' pk=ourdiary.pk %}">
+                                {% csrf_token %}
+                                {{ form.as_p }} <button type="submit">댓글 등록하기</button>
+                            </form>
+                            <hr>
+
+                        </li>
+                        {% for comment in ourdiary.comments.all %}
+                        {% if user.is_authenticated or comment.approved_comment %}
+                        <li class="list-group-item" style="margin: 1px">
+                            <!--댓글 삭제, 승인-->
+
+                            <div class="comment">
+                                <div class="date" style="font-weight: 700; font-size: 15px; color: green;">
+                                    {{comment.created_date|date:"Y년 m월 d일 h시i분 A"}}
+                                    {% if not comment.approved_comment %}
+                                    <a class="btn btn-default"
+                                        href="{% url 'comment_remove' id=ourdiary.pk pk=comment.pk %}">삭제<span
+                                            class="glyphicon glyphicon-remove"></span></a>
+                                    <a class="btn btn-default"
+                                        href="{% url 'comment_approve' id=ourdiary.pk pk=comment.pk %}">승인<span
+                                            class="glyphicon glyphicon-ok"></span></a>
+                                    {% endif %}
+                                </div>
+                                <strong style="font-weight: 900; color: green;">ID : {{comment.author}}</strong>
+                                <p>{{comment.text|linebreaks}}</p>
+                            </div>
+
+                            {% endif %}
+                            {% empty %}
+                            <p>댓글이 아직 없습니다.</p>
+                            {% endfor %}
+                        </li>
+
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %} Plantary Store {% endblock %}
+
+
+{% block css %}
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{% static 'store/vendor/bootstrap/css/bootstrap.min.css' %}">
+
+
+<!-- Additional CSS Files -->
+<link rel="stylesheet" href="{% static 'store/assets/css/tooplate-main.css' %}">
+<link rel="stylesheet" href="{% static 'store/assets/css/owl.css' %}">
+
+{% endblock %}
+
+{% block tab %}
+<a class="nav-link shadow" href="{% url 'home' %}">홈</a>
+
+{% if user.is_authenticated %}
+<a class="nav-link shadow" href="{% url 'mylist' %}" role="tab" aria-selected="false">나의일지</a>
+{% else %}
+<a class="nav-link shadow" role="tab" aria-selected="false" data-toggle="modal" data-target="#staticBackdrop">나의 일지</a>
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title txt-center" id="staticBackdropLabel">잠깐!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        로그인 하셔야 합니다
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+<a class="nav-link shadow" href="{% url 'ourdiary' %}" role="tab" aria-selected="false">모두의 일지</a>
+
+<a class="nav-link shadow active" href="{% url 'storemain' %}" role="tab" aria-selected="false">상점</a>
+
+<a class="nav-link shadow" href="{% url 'storemain' %}" role="tab" aria-selected="false">돌봄 서비스</a>
+{% endblock %}
+
+
+{% block contents %}
+
+<h2 style="color: white; margin: 30px; margin-left: 10px;">▶ 상점에서 새로운 반려식물을 만나보세요.</h2>
+
+<div class="row row-cols-1 row-cols-md-3">
+
+   {% for product in products.all %}
+
+    <div id="1" class="item new col-md-4">
+      <a href="{% url 'productdetail' product.id %}">
+        <div class="featured-item">
+          {% if product.images %}
+          <img src="{{ product.images.url }}" alt="">
+          <h4>{{ product.title }}</h4>
+          <h6>{{ product.price|intcomma }}원</h6>
+          {% endif %}
+        </div>
+      </a>
+    </div>
+  
+  
+    {% endfor %}
+  </div>
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'store/vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Additional Scripts -->
+<script src="{% static 'store/assets/js/custom.js' %}"></script>
+<script src="{% static 'store/assets/js/owl.js' %}"></script>
+<script src="{% static 'store/assets/js/isotope.js' %}"></script>
+
+
+{% endblock %}

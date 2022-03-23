@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %} My Cart {% endblock %}
+
+
+{% block css %}
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{% static 'store/vendor/bootstrap/css/bootstrap.min.css' %}">
+
+
+<!-- Additional CSS Files -->
+<link rel="stylesheet" href="{% static 'store/assets/css/tooplate-main.css' %}">
+<link rel="stylesheet" href="{% static 'store/assets/css/owl.css' %}">
+
+<!--shopping cart-->
+<link rel="stylesheet" href="{% static 'cart/real_cart.css' %}" media="screen" title="no title" charset="utf-8">
+<script src="https://code.jquery.com/jquery-2.2.4.js" charset="utf-8"></script>
+<meta name="robots" content="noindex,follow" />
+
+
+{% endblock %}
+
+{% block tab %}
+<a class="nav-link shadow" href="{% url 'home' %}">홈</a>
+
+{% if user.is_authenticated %}
+<a class="nav-link shadow" href="{% url 'mylist' %}" role="tab" aria-selected="false">나의일지</a>
+{% else %}
+<a class="nav-link shadow" role="tab" aria-selected="false" data-toggle="modal" data-target="#staticBackdrop">나의 일지</a>
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title txt-center" id="staticBackdropLabel">잠깐!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        로그인 하셔야 합니다
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+<a class="nav-link shadow" href="{% url 'ourdiary' %}" role="tab" aria-selected="false">모두의 일지</a>
+
+<a class="nav-link shadow active" href="{% url 'storemain' %}" role="tab" aria-selected="false">상점</a>
+
+<a class="nav-link shadow" href="{% url 'storemain' %}" role="tab" aria-selected="false">돌봄 서비스</a>
+{% endblock %}  
+
+{% block contents %}
+
+<div class="shopping-cart">
+  {% if not cart_items %}
+  <h1>장바구니에 담긴 상품이 없습니다.</h1>
+  <p>식물을 담으려면<a href="{% url 'storemain' %}"> 상점으로 가기</a>를 눌러주세요.</p>
+  {% else %}
+  <!-- Title -->
+  <div class="title" style="height: auto;">
+    현재 장바구니에 담은 상품
+  </div>
+
+  <!-- Product #1 -->
+  {% for cart_item in cart_items %}
+  <div class="item">
+    <div class="buttons">
+      <a href="{% url 'cart:full_remove' cart_item.product.id %}"><span class="delete-btn"></span></a>
+    </div>
+
+    <div class="image">
+      <img src="{{cart_item.product.images.url}}" class="myplant" alt="" />
+    </div>
+
+    <div class="description">
+      <span>{{cart_item.product.title}}</span>
+      <span></span>
+      <span>{{cart_item.product.price|intcomma }}원</span>
+    </div>
+
+    {% if cart_item.quantity > 0 %}
+    <div class="quantity">
+      <button class="minus-btn" type="button" name="button"><a href="{% url 'cart:cart_remove' cart_item.product.id %}">
+          <img src="{% static 'cart/minus.svg' %}" alt="" /></a>
+      </button>
+      <span style="color: white; margin: 10px;">{{cart_item.quantity}}</span>
+      <button class="plus-btn" type="button" name="button"><a href="{% url 'cart:add_cart' cart_item.product.id %}">
+          <img src="{% static 'cart/plus.svg' %}" alt="" /></a>
+      </button>
+    </div>
+    {% else %}
+    <h1> hello </h1>
+    &nbsp;<a href="{% url 'cart:cart_remove' cart_item.product.id %}">Delete</a>&nbsp;
+    <a href="{% url 'cart:full_remove' cart_item.product.id %}">Remove</a>
+    {% endif %}
+
+    <div class="total-price">{{cart_item.sub_total|intcomma }}원</div>
+  </div>
+
+  {% endfor %}
+
+  <!--전체 비용-->
+
+  <div class="total_result_price">
+    <span>총 결제 금액 : {{ total|intcomma }}</span>
+    <span><button>결제하기</button></span>
+  </div>
+
+  <br><br><br>
+
+  {% endif %}
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'store/vendor/jquery/jquery.min.js' %}"></script>
+
+  <!-- Additional Scripts -->
+  <script src="{% static 'store/assets/js/custom.js' %}"></script>
+  <script src="{% static 'store/assets/js/owl.js' %}"></script>
+  <script src="{% static 'store/assets/js/isotope.js' %}"></script>
+
+  {% endblock %}

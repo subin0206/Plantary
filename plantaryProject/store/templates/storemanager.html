@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+    <h1>Plantary의 Store Manager</h1>
+    <h2>등록한 상품</h2>
+    <br>
+    {% for product in products.all %}
+        <br>
+        <div class="container">
+            <h4>{{ product.title }}</h4>
+            <p>{{ product.pub_date }}</p>
+            <p>{{ product.summary }}...more</a></p>
+        </div>
+        <br>
+    {% endfor %}
+    <h3><a href="http://127.0.0.1:8000/admin/store/product/">상품 등록하기</a></h3>
+    <!--<h3><a href="{% url 'registerproduct' %}">제품 등록하기</a></h3>-->
+</body>
+</html>

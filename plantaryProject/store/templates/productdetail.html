@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %} Plant Detail {% endblock %}
+
+
+{% block css %}
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{% static 'store/vendor/bootstrap/css/bootstrap.min.css' %}">
+
+
+<!-- Additional CSS Files -->
+<link rel="stylesheet" href="{% static 'store/assets/css/tooplate-main.css' %}">
+<link rel="stylesheet" href="{% static 'store/assets/css/owl.css' %}">
+<link rel="stylesheet" href="{% static 'store/assets/css/productdetail-button.css' %}">
+
+{% endblock %}
+
+{% block tab %}
+<a class="nav-link shadow" href="{% url 'home' %}">홈</a>
+
+{% if user.is_authenticated %}
+<a class="nav-link shadow" href="{% url 'mylist' %}" role="tab" aria-selected="false">나의일지</a>
+{% else %}
+<a class="nav-link shadow" role="tab" aria-selected="false" data-toggle="modal" data-target="#staticBackdrop">나의 일지</a>
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title txt-center" id="staticBackdropLabel">잠깐!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        로그인 하셔야 합니다
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+<a class="nav-link shadow" href="{% url 'ourdiary' %}" role="tab" aria-selected="false">모두의 일지</a>
+
+<a class="nav-link shadow active" href="{% url 'storemain' %}" role="tab" aria-selected="false">상점</a>
+
+<a class="nav-link shadow" href="{% url 'storemain' %}" role="tab" aria-selected="false">돌봄 서비스</a>
+{% endblock %}
+
+{% block contents %}
+
+<!-- Single Starts Here -->
+<div class="single-product">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="section-heading">
+          <div class="line-dec"></div>
+          <h1 style="font-size: 35px;">{{ product.title }}</h1>
+        </div>
+
+      </div>
+      <div class="col-md-6">
+        <div class="product-slider">
+          {% if product.images %}
+
+          <img class="product_mainimage" src="{{ product.images.url }}" />
+
+          {% endif %}
+        </div>
+      </div>
+
+
+      <div class="col-md-6">
+        <div class="right-content">
+          <h4>{{ product.title }}</h4>
+          <h6>{{ product.price|intcomma }}원</h6>
+          <p>{{ product.body }}</p>
+          <span><a
+              href="https://www.coupang.com/np/search?component=&q=%EC%9C%A0%EC%B9%BC%EB%A6%BD%ED%88%AC%EC%8A%A4&channel=user" style="color: black;">쿠팡에서
+              가격 확인하기 CLICK</a></span><br>
+          <span><a
+              href="https://search.wemakeprice.com/search?search_cate=top&keyword=%EC%9C%A0%EC%B9%BC%EB%A6%BD%ED%88%AC%EC%8A%A4&isRec=1&_service=5&_type=3" style="color: black;">위메프에서
+              가격 확인하기 CLICK</a></span><br>
+          <span><a
+              href="http://search.11st.co.kr/Search.tmall?kwd=%25EC%259C%25A0%25EC%25B9%25BC%25EB%25A6%25BD%25ED%2588%25AC%25EC%258A%25A4" style="color: black;">11번가에서
+              가격 확인하기 CLICK</a></span><br>
+          <span><a
+              href="http://browse.auction.co.kr/search?keyword=%ec%9c%a0%ec%b9%bc%eb%a6%bd%ed%88%ac%ec%8a%a4&itemno=&nickname=&frm=hometab&dom=auction&isSuggestion=No&retry=&Fwk=%ec%9c%a0%ec%b9%bc%eb%a6%bd%ed%88%ac%ec%8a%a4&acode=SRP_SU_0100&arraycategory=&encKeyword=%ec%9c%a0%ec%b9%bc%eb%a6%bd%ed%88%ac%ec%8a%a4&f=c:99000000" style="color: black;">옥션에서
+              가격 확인하기 CLICK</a></span><br>
+          <span><a
+              href="https://browse.gmarket.co.kr/search?keyword=%ec%9c%a0%ec%b9%bc%eb%a6%bd%ed%88%ac%ec%8a%a4&f=c:100000041" style="color: black;">지마켓에서
+              가격 확인하기 CLICK</a></span>
+          <form action="{% url 'cart:add_cart' product.id %}" method="get">
+            <button>장바구니에 담기!</button>
+            <button><a class="button" href="{% url 'storemain' %}">상점 목록으로 돌아가기</a></button>
+          </form>
+          <div class="down-content">
+            <div class="categories">
+              <h6>카테고리: <span><a>플랜테리어</a>,<a>라이프스타일</a>,<a>다육이</a></span></h6>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Single Page Ends Here -->
+
+
+
+<div class="detail">
+  <h3>제품 상세정보</h3>
+</div>
+<br>
+{% for photo in product.photo_set.all%}
+<img class="photo_detail" src="{{photo.image.url}}"><br>
+{% endfor %}
+<br>
+
+
+
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'store/vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Additional Scripts -->
+<script src="{% static 'store/assets/js/custom.js' %}"></script>
+<script src="{% static 'store/assets/js/owl.js' %}"></script>
+<script src="{% static 'store/assets/js/isotope.js' %}"></script>
+<script src="{% static 'store/assets/js/flex-slider.js' %}"></script>
+
+
+<script language="text/Javascript">
+  cleared[0] = cleared[1] = cleared[2] = 0; //set a cleared flag for each field
+  function clearField(t) { //declaring the array outside of the
+    if (!cleared[t.id]) { // function makes it static and global
+      cleared[t.id] = 1; // you could use true and false, but that's more typing
+      t.value = ''; // with more chance of typos
+      t.style.color = '#fff';
+    }
+  }
+</script>
+
+{% endblock %}

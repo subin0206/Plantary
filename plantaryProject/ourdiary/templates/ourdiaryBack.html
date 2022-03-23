@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>ourdiary</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
+    <!-- Bootstrap core CSS -->
+    <link href="css/cover.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="js/slide.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <p>{{ user.username }}</p>
+    <a href="javascript:{document.getElementById('logout').submit()}">로그아웃</a>
+    <form id="logout" method="POST" action="{% url 'logout' %}">
+        {% csrf_token %} <input type="hidden" />
+    </form>
+    {% else %}
+    로그인을 하세요
+    <a href="{% url 'signup' %}">회원가입</a>
+    <a href="{% url 'login' %}">로그인</a>
+    {%endif%}
+    <h1>ourdiary</h1>
+    {{current_user}}
+    {% for ourdiary in ourdiarys.all %}
+    
+    <!--페이지-->
+    <main role="main" class="inner cover">
+        <section  id = "main-section">
+            <!--페이지-->
+            <div class = "paper">
+                <div class = "paper-holder">
+                    {% for photo in ourdiary.photo_set.all %}
+                    {%  ifequal forloop.counter 1 %}
+                    <img src = "{{photo.image.url}}" width="100">
+                    {% endifequal %}
+                    {% endfor %}
+                </div>
+                <div class = "paper-content">
+                    <h4>{{ourdiary.title}}</h4>
+                    <a href="{% url 'detail' ourdiary.id %}">Comments: {{ ourdiary.comments.count }}</a>
+                    <p class="card-summary">{{ourdiary.summary}}<a href="{% url 'detail' ourdiary.id %}">...more</a></p>
+                </div>
+            </div>
+        </section>   
+    </main>
+
+    {% endfor %}
+
+ 
+
+</body>
+</html>
