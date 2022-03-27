@@ -20,10 +20,10 @@ https://youtu.be/3daI0oQYnxM
 + OAuth2.0
 
 ## +
-[같이 개발한 팀원들](https://plantary.notion.site/Members-784f75f432e640368d877477002de9b4)   
++ [같이 개발한 팀원들](https://plantary.notion.site/Members-784f75f432e640368d877477002de9b4)   
 
-[오류 해결 모음](https://plantary.notion.site/cc22fc1047484de4bd3df8a8a844b4ec?v=3abbb0d07dd14e29bf016d958d7e0b09)
++ [오류 해결 모음](https://plantary.notion.site/cc22fc1047484de4bd3df8a8a844b4ec?v=3abbb0d07dd14e29bf016d958d7e0b09)
 
-[개발 타임라인](https://plantary.notion.site/History-e1d0bf5296ac46cc87f3c5564712abbe)   
++ [개발 타임라인](https://plantary.notion.site/History-e1d0bf5296ac46cc87f3c5564712abbe)   
 
-[백엔드 기능 소개](https://plantary.notion.site/Backend-e9705dbb969443c8a3843c8e993a5399)
++ [백엔드 기능 소개](https://plantary.notion.site/Backend-e9705dbb969443c8a3843c8e993a5399)
